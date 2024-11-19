@@ -25,5 +25,8 @@
   "scripts": {
     "start": "ts-node index.ts",
     "dev": "nodemon index.ts"
+  },
+  "prisma": {
+    "seed": "ts-node ./Utility/seed.ts"
   }
 }
