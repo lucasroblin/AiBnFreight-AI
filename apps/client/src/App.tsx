@@ -39,6 +39,7 @@ export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
     setIsModalOpen(true);
+    setDrawerState(false)
   };
   const handleOk = () => {
     setIsModalOpen(false);
@@ -116,7 +117,7 @@ export default function App() {
                         >
                           Open
                         </Button>
-                        <Button disabled={!offer.bookable} onClick={showModal}>Book</Button>
+                        <Button disabled={!offer.bookable} onClick={(e) => { e.preventDefault(); e.stopPropagation(); showModal() }}>Book</Button>
                       </Stack>
                     </Stack>
                   </Card>
