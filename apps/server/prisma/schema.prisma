@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Offer {
+  id           Int       @id @default(autoincrement())
+  departure    Airport   @relation("Departures", fields: [departureId], references: [iata], onDelete: Cascade)
+  departureId  String
+  arrival      Airport   @relation("Arrivals", fields: [arrivalId], references: [iata], onDelete: Cascade)
+  arrivalId    String
+  weight       Int
+  etd          String
+  eta          String
+  bookable     Boolean   @default(true)
+  isCargoPlane Boolean   @default(false)
+  notes String?
+  availableWeight Int 
+  price        Float
+  bookings     Booking[] @relation("Bookings")
+}
+
+model Booking {
+  id        Int      @id @default(autoincrement())
+  weight    Int
+  status    String?  
+  timestamp DateTime @default(now())
+  offer     Offer    @relation("Bookings",fields: [offerId], references: [id], onDelete: Cascade)
+  offerId   Int
+}
+
+model Airport {
+  iata       String  @id
+  Departures Offer[] @relation("Departures")
+  Arrivals   Offer[] @relation("Arrivals")
+  name       String
+  city       String
+  country    String
+}

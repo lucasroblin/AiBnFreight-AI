@@ -1,97 +1,83 @@
-import { IoAirplane } from "react-icons/io5";
-import { Card, Drawer } from 'antd';
-import { useState } from "react";
+import Box from '@mui/joy/Box';
+import Button from '@mui/joy/Button';
+import Card from '@mui/joy/Card';
+import FormControl from '@mui/joy/FormControl';
+import FormLabel from '@mui/joy/FormLabel';
+import Typography from '@mui/joy/Typography';
+import Stack from '@mui/joy/Stack';
+import { VariantProp, ColorPaletteProp } from '@mui/joy/styles';
+import { IoAirplane } from 'react-icons/io5';
+import { Row } from 'antd';
+import Drawer from '@mui/joy/Drawer';
+import { useEffect, useState } from 'react';
+import { boxShadow, fontWeight } from '@mui/system';
 
-function App() {
-  const myObj = {
-      "departure" : "PVG",
-      "arrival" : "YYZ",
-      "weight" :  2000,
-      "etd" :  "22-11-2024",
-      "eta" :  "24-11-2024",
-      "price": 9.11
-  }
-  const [open, setOpen] = useState(false);
-  
-  const showDrawer = () => {
-    setOpen(true);
-  };
 
-  const onClose = () => {
-    setOpen(false);
-  };
 
-  return (
-    <>
-  
-      <Drawer title="Offer's Details" onClose={onClose} open={open}>
-        <div className="flex flex-col gap-2">
-          <p><span className="font-bold">Notes :</span> Air freight from San Francisco International Airport to Hartsfield-Jackson Atlanta International Airport offers secure and timely cargo handling at $6.32/kg. Our professional service ensures your shipment is delivered efficiently, suitable for all clients. <br/> {'\n'}</p>
-          <p><span className="font-bold">Departure : </span>{myObj.departure}</p>
-          <p><span className="font-bold">Departure : </span></p>
-        </div>
-      </Drawer>
+export default function App() {
 
-      <div className="flex flex-col items-center bg-red-400 h-screen justify-center gap-2">
+    const [data, setData] = useState([])
+    const [loading, setLoading] = useState(true)
 
-        <Card className="w-fit hover:scale-[102%]  aria-checked:scale-[102%]" onClick={showDrawer}>
-          <div className="flex space-x-4 ">
-            <div className="flex gap-1">
-              <p>{myObj.departure}</p>
-              <div className="flex items-center"> <IoAirplane /> </div>
-              <p>{myObj.arrival}</p>
-            </div>
-            <p>{myObj.weight} Kg</p>
-            <p>{myObj.etd}</p>
-            <p>{myObj.eta}</p>
-            <p>{myObj.price}€/Kg</p>
-          </div>
-        </Card>
+    async function getData() {
+        const data = await (await fetch("http://localhost:8080/offers")).json()
+        setData(data.data)
+    }
 
-        <Card className="w-fit hover:scale-[102%]  aria-checked:scale-[102%]" onClick={showDrawer}>
-          <div className="flex space-x-4 ">
-            <div className="flex gap-1">
-              <p>{myObj.arrival}</p>
-              <div className="flex items-center"> <IoAirplane /> </div>
-              <p>{myObj.departure}</p>
-            </div>
-            <p>{myObj.weight} Kg</p>
-            <p>{myObj.etd}</p>
-            <p>{myObj.eta}</p>
-            <p>{myObj.price}€/Kg</p>
-          </div>
-        </Card>
+    useEffect(() => {
+        getData()
+        setLoading(false)
+    }, [])
 
-        <Card className="w-fit hover:scale-[102%]  aria-checked:scale-[102%]" onClick={showDrawer}>
-          <div className="flex space-x-4 ">
-            <div className="flex gap-1">
-              <p>{myObj.arrival}</p>
-              <div className="flex items-center"> <IoAirplane /> </div>
-              <p>{myObj.departure}</p>
-            </div>
-            <p>{myObj.weight} Kg</p>
-            <p>{myObj.etd}</p>
-            <p>{myObj.eta}</p>
-            <p>{myObj.price}€/Kg</p>
-          </div>
-        </Card>
+    const [drawerState, setDrawerState] = useState(false)
+    if (loading) {
+        return <p>Loading ...</p>
+    }
+    return (
+        <>
+            <Box sx={{
+                p: 2,
+                height: "100vh"
+            }}>
+                <Stack direction={"column"} spacing={2}>
+                    {data.filter(x => x.bookable).map(myObj => {
+                        return (
+                            < Card variant={'outlined'} color={'neutral'} sx={{ maxWidth: '800px', '&:hover': { background: 'white', scale: 1.025 } }} onClick={() => setDrawerState(true)}>
+                                <Stack
+                                    direction="row"
+                                    spacing={2}
+                                    sx={{
+                                        justifyContent: "space-around",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <Stack direction={"row"} gap={1}>
+                                        <Typography textAlign={'left'}>{myObj.departureId}</Typography>
+                                        <div className="flex items-center"> <IoAirplane /> </div>
+                                        <Typography textAlign={'left'}>{myObj.arrivalId}</Typography>
+                                    </Stack>
+                                    <Typography textAlign={'left'}>{myObj.weight} Kg</Typography>
+                                    <Typography textAlign={'left'}>{new Date(myObj.etd).toLocaleDateString()}</Typography>
+                                    <Typography textAlign={'left'}>{new Date(myObj.eta).toLocaleDateString()}</Typography>
+                                    <Typography textAlign={'left'}>{myObj.price}€/Kg</Typography>
+                                    <Typography textAlign={'left'}>{myObj.availableWeight}Kg</Typography>
+                                    <Stack direction={"row"} spacing={0.5}>
+                                        <Button color='neutral' onClick={() => setDrawerState(true)}>Open</Button>
+                                        <Button disabled={!myObj.bookable}>Book</Button>
 
-        <Card className="w-fit hover:scale-[102%]  aria-checked:scale-[102%]" onClick={showDrawer}>
-          <div className="flex space-x-4 ">
-            <div className="flex gap-1">
-              <p>{myObj.arrival}</p>
-              <div className="flex items-center"> <IoAirplane /> </div>
-              <p>{myObj.departure}</p>
-            </div>
-            <p>{myObj.weight} Kg</p>
-            <p>{myObj.etd}</p>
-            <p>{myObj.eta}</p>
-            <p>{myObj.price}€/Kg</p>
-          </div>
-        </Card>
-      </div>
-    </>
-  )
+                                    </Stack>
+                                </Stack>
+                            </Card>
+                        )
+                    })
+                    }
+                </Stack>
+
+                <Drawer size='md' anchor={"right"} open={drawerState} onClose={() => setDrawerState(false)} >
+                    <Typography sx={{ fontWeight: 'bold' }}>Notes :</Typography>
+                </Drawer>
+            </Box >
+        </>
+
+    )
 }
-
-export default App
