@@ -14,11 +14,12 @@ import { OffersEtd } from './components/OffersETD'
 import { OffersEta } from './components/OffersETA'
 import { OffersAvailableWeight } from './components/OffersAvailableWeight'
 import { OffersPrice } from './components/OffersPrice'
+import { Modal, FloatButton } from 'antd';
+
 
 export default function App() {
   const [data, setData] = useState<Offer[]>([])
   const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null)
-  const [loading, setLoading] = useState(true)
   const [drawerState, setDrawerState] = useState(false)
 
   async function getData() {
@@ -28,7 +29,6 @@ export default function App() {
 
   useEffect(() => {
     getData()
-    setLoading(false)
   }, [])
 
   const onOfferSelect = useCallback((offer: Offer) => {
@@ -36,9 +36,36 @@ export default function App() {
     setDrawerState(true)
   }, [])
 
-  if (loading) {
-    return <p>Loading ...</p>
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+
+
+  function formatNumber(num: number): string {
+    const numStr = num.toString();
+
+    if (numStr.length === 3 || numStr.length === 4) {
+      return (num / 100).toFixed(2)
+    }
+
+    return numStr
   }
+
+
+
+
+
+
+
+
   return (
     <>
       <Box
@@ -52,9 +79,9 @@ export default function App() {
             .filter((offer) => offer.bookable)
             .map((offer) => {
               return (
-                <div className='flex justify-center bg-black'>
+                <div className='flex justify-center '>
                   <Card
-                    className="py-6 hover:scale-[102%] max-w-[60%]"
+                    className="py-6 hover:scale-[102%] max-w-[70%] min-w-[70%]"
                     color={'neutral'}
                     onClick={() => onOfferSelect(offer)}
                   >
@@ -77,7 +104,7 @@ export default function App() {
                         {new Date(offer.eta).toLocaleDateString()}
                       </Typography>
                       <Typography textAlign={'left'}>
-                        {offer.price}€/Kg
+                        {formatNumber(offer.price)}€/Kg
                       </Typography>
                       <Typography textAlign={'left'}>
                         {offer.availableWeight}Kg
@@ -89,7 +116,7 @@ export default function App() {
                         >
                           Open
                         </Button>
-                        <Button disabled={!offer.bookable}>Book</Button>
+                        <Button disabled={!offer.bookable} onClick={showModal}>Book</Button>
                       </Stack>
                     </Stack>
                   </Card>
@@ -153,6 +180,38 @@ export default function App() {
           )}
         </Drawer>
       </Box>
+
+
+      <FloatButton className="hover:scale-[120%] font-bold" tooltip={<div>Create a new offer</div>} description="New Offer" shape="circle" style={{ insetInlineEnd: 94 }} onClick={showModal} />
+      <Modal title="Enter your new offer" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+        <div className="flex flex-col gap-">
+          <div>
+            <p>Departure : </p>
+            <input placeholder="Enter departure airport ..."></input>
+          </div>
+          <div>
+            <p>Arrival : </p>
+            <input placeholder="Enter airport of destination ..."></input>
+          </div>
+          <div>
+            <p>Weight : </p>
+            <input placeholder="Enter chargeable weigth ..."></input>
+          </div>
+          <div>
+            <p>ETD : </p>
+            <input placeholder="Enter ETD ..."></input>
+          </div>
+          <div>
+            <p>ETA :</p>
+            <input placeholder="Enter ETA ..."></input>
+          </div>
+          <div>
+            <p>Price :</p>
+            <input placeholder="Enter price of freight ..."></input>
+          </div>
+        </div>
+
+      </Modal>
     </>
   )
 }
