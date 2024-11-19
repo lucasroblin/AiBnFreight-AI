@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import * as OfferRepository from '../Models/offerModel'
+import * as OfferRepository from '../Directory/offerDirectory'
 import { Booking, Offer } from '@prisma/client'
 
 export async function addOffer(req: Request, res: Response): Promise<void> {
@@ -60,6 +60,7 @@ export async function getAllOffers(req: Request, res: Response): Promise<void> {
     eta: offer.eta,
     bookable: offer.bookable,
     price: offer.price,
+    notes: offer.notes,
   }))
   res.status(201)
   res.json({

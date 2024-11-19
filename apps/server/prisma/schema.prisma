@@ -21,7 +21,7 @@ model Offer {
   eta          String
   bookable     Boolean   @default(true)
   isCargoPlane Boolean   @default(false)
-  notes String?
+  notes String
   availableWeight Int 
   price        Float
   bookings     Booking[] @relation("Bookings")

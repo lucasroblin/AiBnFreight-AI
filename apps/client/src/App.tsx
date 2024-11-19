@@ -7,7 +7,13 @@ import { useCallback, useEffect, useState } from 'react'
 import * as api from '@/lib/api-client'
 import { Offer } from '@/lib/api-client'
 import { FlightPath } from './components/FlightPath'
+import { OffersNotes } from './components/OffersNotes'
 import { Card, CardContent } from './components/ui/card'
+import { OffersWeight } from './components/OffersWeight'
+import { OffersEtd } from './components/OffersETD'
+import { OffersEta } from './components/OffersETA'
+import { OffersAvailableWeight } from './components/OffersAvailableWeight'
+import { OffersPrice } from './components/OffersPrice'
 
 export default function App() {
   const [data, setData] = useState<Offer[]>([])
@@ -46,46 +52,48 @@ export default function App() {
             .filter((offer) => offer.bookable)
             .map((offer) => {
               return (
-                <Card
-                  className="py-6"
-                  color={'neutral'}
-                  onClick={() => onOfferSelect(offer)}
-                >
-                  <Stack
-                    direction="row"
-                    spacing={2}
-                    sx={{
-                      justifyContent: 'space-around',
-                      alignItems: 'center',
-                    }}
+                <div className='flex justify-center bg-black'>
+                  <Card
+                    className="py-6 hover:scale-[102%] max-w-[60%]"
+                    color={'neutral'}
+                    onClick={() => onOfferSelect(offer)}
                   >
-                    <FlightPath offer={offer} />
-                    <Typography textAlign={'left'}>
-                      {offer.weight} Kg
-                    </Typography>
-                    <Typography textAlign={'left'}>
-                      {new Date(offer.etd).toLocaleDateString()}
-                    </Typography>
-                    <Typography textAlign={'left'}>
-                      {new Date(offer.eta).toLocaleDateString()}
-                    </Typography>
-                    <Typography textAlign={'left'}>
-                      {offer.price}€/Kg
-                    </Typography>
-                    <Typography textAlign={'left'}>
-                      {offer.availableWeight}Kg
-                    </Typography>
-                    <Stack direction={'row'} spacing={0.5}>
-                      <Button
-                        color="neutral"
-                        onClick={() => onOfferSelect(offer)}
-                      >
-                        Open
-                      </Button>
-                      <Button disabled={!offer.bookable}>Book</Button>
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      sx={{
+                        justifyContent: 'space-around',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <FlightPath offer={offer} />
+                      <Typography textAlign={'left'}>
+                        {offer.weight} Kg
+                      </Typography>
+                      <Typography textAlign={'left'}>
+                        {new Date(offer.etd).toLocaleDateString()}
+                      </Typography>
+                      <Typography textAlign={'left'}>
+                        {new Date(offer.eta).toLocaleDateString()}
+                      </Typography>
+                      <Typography textAlign={'left'}>
+                        {offer.price}€/Kg
+                      </Typography>
+                      <Typography textAlign={'left'}>
+                        {offer.availableWeight}Kg
+                      </Typography>
+                      <Stack direction={'row'} spacing={0.5}>
+                        <Button
+                          color="neutral"
+                          onClick={() => onOfferSelect(offer)}
+                        >
+                          Open
+                        </Button>
+                        <Button disabled={!offer.bookable}>Book</Button>
+                      </Stack>
                     </Stack>
-                  </Stack>
-                </Card>
+                  </Card>
+                </div>
               )
             })}
         </Stack>
@@ -97,12 +105,50 @@ export default function App() {
           onClose={() => setDrawerState(false)}
         >
           {selectedOffer && (
-            <div className="p-6">
+            <div className="p-6 flex flex-col gap-2">
+
               <Card>
+                <CardContent className='pt-6'>
+                  <OffersNotes offer={selectedOffer} />
+                </CardContent>
+              </Card>
+
+              <Card className='min-h-28 flex justify-center items-center'>
                 <CardContent className="pt-6">
                   <FlightPath offer={selectedOffer} />
                 </CardContent>
               </Card>
+
+              <Card className='min-h-28 flex justify-center items-center'>
+                <CardContent className="pt-6">
+                  <OffersWeight offer={selectedOffer} />
+                </CardContent>
+              </Card>
+
+              <Card className='min-h-28 flex justify-center items-center'>
+                <CardContent className="pt-6">
+                  <OffersEtd offer={selectedOffer} />
+                </CardContent>
+              </Card>
+
+              <Card className='min-h-28 flex justify-center items-center'>
+                <CardContent className="pt-6">
+                  <OffersEta offer={selectedOffer} />
+                </CardContent>
+              </Card>
+
+              <Card className='min-h-28 flex justify-center items-center'>
+                <CardContent className="pt-6">
+                  <OffersAvailableWeight offer={selectedOffer} />
+                </CardContent>
+              </Card>
+
+              <Card className='min-h-28 flex justify-center items-center'>
+                <CardContent className="pt-6">
+                  <OffersPrice offer={selectedOffer} />
+                </CardContent>
+              </Card>
+
             </div>
           )}
         </Drawer>

@@ -4,6 +4,7 @@ export interface Offer {
   arrivalId: string
   weight: number
   availableWeight: number
+  notes: string
   etd: Date
   eta: Date
   bookable: boolean
