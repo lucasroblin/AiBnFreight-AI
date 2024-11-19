@@ -1,5 +1,5 @@
 import { Stack, Typography } from '@mui/joy'
-import { Offer } from '../../lib/api-client'
+import { Offer } from '@/lib/api-client'
 import { IoAirplane } from 'react-icons/io5'
 
 interface FlightPathProps {

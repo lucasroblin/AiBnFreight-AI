@@ -1,14 +1,13 @@
 import Box from '@mui/joy/Box'
 import Button from '@mui/joy/Button'
-import Card from '@mui/joy/Card'
 import Typography from '@mui/joy/Typography'
 import Stack from '@mui/joy/Stack'
 import Drawer from '@mui/joy/Drawer'
 import { useCallback, useEffect, useState } from 'react'
-// import *, {o} as api from '../lib/api-client'
-import * as api from '../lib/api-client'
-import { Offer } from '../lib/api-client'
+import * as api from '@/lib/api-client'
+import { Offer } from '@/lib/api-client'
 import { FlightPath } from './components/FlightPath'
+import { Card, CardContent } from './components/ui/card'
 
 export default function App() {
   const [data, setData] = useState<Offer[]>([])
@@ -48,12 +47,8 @@ export default function App() {
             .map((offer) => {
               return (
                 <Card
-                  variant={'outlined'}
+                  className="py-6"
                   color={'neutral'}
-                  sx={{
-                    maxWidth: '800px',
-                    '&:hover': { background: 'white', scale: 1.025 },
-                  }}
                   onClick={() => onOfferSelect(offer)}
                 >
                   <Stack
@@ -103,8 +98,11 @@ export default function App() {
         >
           {selectedOffer && (
             <div className="p-6">
-              <Typography sx={{ fontWeight: 'bold' }}>Notes :</Typography>
-              <FlightPath offer={selectedOffer} />
+              <Card>
+                <CardContent className="pt-6">
+                  <FlightPath offer={selectedOffer} />
+                </CardContent>
+              </Card>
             </div>
           )}
         </Drawer>
