@@ -18,11 +18,13 @@ import { FloatButton } from 'antd';
 import { MenuBar } from './components/MenuBar';
 import { SearchBar } from './components/SearchBar';
 import ModalComponent from './components/ModalComponent';
+import SuccessModalComponent from './components/SuccessModalComponent';
 
 export default function App() {
   const [data, setData] = useState<Offer[]>([]);
   const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
   const [drawerState, setDrawerState] = useState(false);
+
 
   async function getData() {
     const data = await api.getOffers();
@@ -51,7 +53,18 @@ export default function App() {
     setIsModalOpen(false);
   };
 
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false)
+  const showSuccessModal = () => {
+    setIsSuccessModalOpen(true)
+  }
 
+  const handleSuccessOk = () => {
+    setIsSuccessModalOpen(false);
+  };
+
+  const isTrue = () => { //Condition passed to modalComponent
+    showSuccessModal()
+  }
 
 
 
@@ -198,8 +211,12 @@ export default function App() {
         }}
         onClick={showModal}
       />
-      <ModalComponent isModalOpen={isModalOpen} handleOk={handleOk} handleCancel={handleCancel}></ModalComponent>
+      <ModalComponent isModalOpen={isModalOpen} handleOk={handleOk} handleCancel={handleCancel} isTrue={isTrue}></ModalComponent>
+      {
 
+        <SuccessModalComponent isSuccessModalOpen={isSuccessModalOpen} handleSuccessOk={handleSuccessOk} handleCancel={handleCancel} />
+
+      }
 
     </>
   );

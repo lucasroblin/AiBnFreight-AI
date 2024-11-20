@@ -5,12 +5,15 @@ interface modalTypes {
     isModalOpen: boolean;
     handleOk: () => void;
     handleCancel: () => void;
+    isTrue: () => void
+
 }
 
 export default function ModalComponent({
     isModalOpen,
     handleOk,
     handleCancel,
+    isTrue
 }: modalTypes) {
     const [departureInput, setDepartureInput] = useState('');
     const [arrivalInput, setArrivalInput] = useState('');
@@ -76,9 +79,15 @@ export default function ModalComponent({
         };
 
         fetch('http://localhost:8080/offers', requestOptions)
-            .then((response) => response.json())
+            .then((response) => {
+                if (response.status === 201) {
+                    isTrue()
+                }
+                return response.json()
+            })
             .then((result) => console.log(result))
             .catch((error) => console.error('error', error));
+
     }
 
     return (
