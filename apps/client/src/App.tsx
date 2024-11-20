@@ -24,6 +24,7 @@ export default function App() {
   const [data, setData] = useState<Offer[]>([]);
   const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
   const [drawerState, setDrawerState] = useState(false);
+  const [selectedWeight, setSelectedWeight] = useState<number>(0);
 
 
   async function getData() {
@@ -66,6 +67,15 @@ export default function App() {
     showSuccessModal()
   }
 
+  function formatNumber(num: number): string {
+    const numStr = num.toString();
+
+    if (numStr.length === 3 || numStr.length === 4) {
+      return (num / 100).toFixed(2)
+    }
+
+    return numStr
+  }
 
 
   return (
@@ -183,11 +193,35 @@ export default function App() {
                 </Card>
               </div>
 
+              <div className="flex flex-col gap-4">
+                <label className="font-bold">Enter Weight (Kg):</label>
+                <input
+                  type="text"
+                  className="border border-gray-300 rounded-md px-3 py-2 w-full"
+                  value={selectedWeight === 0 ? '' : selectedWeight} // Show empty when 0
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^\d*$/.test(value)) { // Allow only numeric input
+                      const numericValue = Number(value);
+                      if (numericValue <= (selectedOffer?.availableWeight || 0)) {
+                        setSelectedWeight(numericValue);
+                      }
+                    }
+                  }}
+                  placeholder={`Enter weight (max ${selectedOffer?.availableWeight || 0} Kg)`}
+                />
+                <Typography className="text-lg font-bold text-blue-600">
+                  Total Price: ${(
+                    selectedWeight * parseFloat(formatNumber(selectedOffer.price || 0))
+                  ).toFixed(2)}
+                </Typography>
+              </div>
+
+
+
               <Button
                 className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mt-4"
                 onClick={() => {
-                  showModal()
-                  setDrawerState(false)
                 }}
               >
                 Book
@@ -196,7 +230,9 @@ export default function App() {
           )}
         </Drawer>
 
-      </Box>
+
+
+      </Box >
 
       <FloatButton
         className="hover:scale-[120%] font-bold"
@@ -217,7 +253,6 @@ export default function App() {
         <SuccessModalComponent isSuccessModalOpen={isSuccessModalOpen} handleSuccessOk={handleSuccessOk} handleCancel={handleCancel} />
 
       }
-
     </>
   );
 }

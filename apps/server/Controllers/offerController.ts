@@ -31,20 +31,6 @@ export async function getOffer(req: Request, res: Response): Promise<void> {
   }
 }
 
-// function computeAvailableWeight(
-//   totalWeight: number,
-//   bookings: Booking[]
-// ): number {
-//   const relevantBooking = bookings.filter(
-//     (booking) => booking.status !== 'canceled'
-//   )
-//   const totalBookedWeight = relevantBooking.reduce(
-//     (acc, booking) => acc + booking.weight,
-//     0
-//   )
-//   return totalWeight - totalBookedWeight
-// }
-
 export async function getAllOffers(req: Request, res: Response): Promise<void> {
   const query = req.query
   const page = Number(query.page) || 0

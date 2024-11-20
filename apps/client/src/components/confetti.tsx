@@ -9,25 +9,35 @@ const ConfettiEffect: React.FC = () => {
             gravity: 0,
             decay: 0.94,
             startVelocity: 30,
-            shapes: ["square"],
-            colors: ["FFC0CB", "FF69B4", "FF1493", "C71585"],
+            shapes: ["polygon"],
+            colors: [
+                "#FF0000", // Red
+                "#FFA500", // Orange
+                "#FFFF00", // Yellow
+                "#008000", // Green
+                "#0000FF", // Blue
+                "#800080", // Purple
+                "#FFC0CB", // Pink
+                "#FFFFFF"  // White
+            ]
+            ,
         };
 
         confetti({
             ...defaults,
-            particleCount: 50,
+            particleCount: 100,
             scalar: 2,
         });
 
         confetti({
             ...defaults,
-            particleCount: 25,
+            particleCount: 50,
             scalar: 3,
         });
 
         confetti({
             ...defaults,
-            particleCount: 10,
+            particleCount: 25,
             scalar: 4,
         });
     }, []);
