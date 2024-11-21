@@ -11,13 +11,19 @@ export async function addOffer(
   price: number,
   notes: string
 ): Promise<void> {
+  const formattedEtd =
+    new Date(etd.split('-').reverse().join('-')).toISOString().split('T')[0] +
+    'T12:00:00'
+  const formattedEta =
+    new Date(eta.split('-').reverse().join('-')).toISOString().split('T')[0] +
+    'T12:00:00'
   await prisma.offer.create({
     data: {
       departureId: departure,
       arrivalId: arrival,
       weight,
-      etd,
-      eta,
+      etd: formattedEtd,
+      eta: formattedEta,
       price,
       availableWeight: weight,
       notes,
