@@ -30,9 +30,9 @@ export function MenuBar({ showModal }: modalType) {
                     <MenubarMenu>
                         <MenubarTrigger>Offers</MenubarTrigger>
                         <MenubarContent>
-                            <MenubarItem onClick={showModal}>New Offer</MenubarItem>
+                            <MenubarItem onClick={showModal}>New offer</MenubarItem>
                             <MenubarSeparator />
-                            <MenubarItem>My Offer</MenubarItem>
+                            <MenubarItem>My offer</MenubarItem>
                             <MenubarSeparator />
                         </MenubarContent>
                     </MenubarMenu>

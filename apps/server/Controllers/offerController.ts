@@ -34,7 +34,7 @@ export async function getOffer(req: Request, res: Response): Promise<void> {
 export async function getAllOffers(req: Request, res: Response): Promise<void> {
   const query = req.query
   const page = Number(query.page) || 0
-  const limit = Number(query.limit) || 10
+  const limit = Number(query.limit) || 850
   const allOffers = await OfferRepository.getAllOffers(limit, page)
   const enhancedOffers = allOffers?.map((offer: any) => ({
     id: offer.id,
