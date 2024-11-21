@@ -1,12 +1,11 @@
-import { Modal } from 'antd';
-import { BaseSyntheticEvent, useState } from 'react';
+import { Modal } from 'antd'
+import { BaseSyntheticEvent, useState } from 'react'
 
 interface modalTypes {
-    isModalOpen: boolean;
-    handleOk: () => void;
-    handleCancel: () => void;
+    isModalOpen: boolean
+    handleOk: () => void
+    handleCancel: () => void
     isTrue: () => void
-
 }
 
 export default function ModalComponent({
@@ -15,68 +14,67 @@ export default function ModalComponent({
     handleCancel,
     isTrue
 }: modalTypes) {
-    const [departureInput, setDepartureInput] = useState('');
-    const [arrivalInput, setArrivalInput] = useState('');
-    const [weightInput, setWeightInput] = useState(0);
-    const [etdInput, setEtdInput] = useState('');
-    const [etaInput, setEtaInput] = useState('');
-    const [priceInput, setPriceInput] = useState(0);
-    const [notesInput, setNotesInput] = useState('');
+    const [departureInput, setDepartureInput] = useState('')
+    const [arrivalInput, setArrivalInput] = useState('')
+    const [weightInput, setWeightInput] = useState('')
+    const [etdInput, setEtdInput] = useState('')
+    const [etaInput, setEtaInput] = useState('')
+    const [priceInput, setPriceInput] = useState('')
+    const [notesInput, setNotesInput] = useState('')
 
-    // Handle input changes
     const handleChange = (e: BaseSyntheticEvent) => {
-        const { name, value } = e.target;
+        const { name, value } = e.target
         switch (name) {
             case 'departure':
-                setDepartureInput(value);
-                break;
+                setDepartureInput(value.toUpperCase().slice(0, 3))
+                break
             case 'arrival':
-                setArrivalInput(value);
-                break;
+                setArrivalInput(value.toUpperCase().slice(0, 3))
+                break
             case 'weight':
-                setWeightInput(Number(value)); // Ensure it's a number
-                break;
+                if (!isNaN(Number(value)) || value === '') setWeightInput(value)
+                break
             case 'etd':
-                setEtdInput(value);
-                break;
+                setEtdInput(value)
+                break
             case 'eta':
-                setEtaInput(value);
-                break;
+                setEtaInput(value)
+                break
             case 'price':
-                setPriceInput(Number(value)); // Ensure it's a number
-                break;
+                setPriceInput(value)
+                break
             case 'notes':
-                setNotesInput(value);
-                break;
+                setNotesInput(value)
+                break
             default:
-                break;
+                break
         }
-    };
+    }
 
-    function sendOffer(event: BaseSyntheticEvent) {
-        event.preventDefault();
-        handleOk();
-        console.log('Entering sendOffer');
-        console.log(departureInput, arrivalInput, weightInput, etdInput, etaInput, priceInput, notesInput);
+    const sendOffer = (event: BaseSyntheticEvent) => {
+        event.preventDefault()
+        handleOk()
+        console.log('Entering sendOffer')
+        console.log(departureInput, arrivalInput, weightInput, etdInput, etaInput, priceInput, notesInput)
 
-        const myHeaders = new Headers();
-        myHeaders.append('Content-Type', 'application/json');
+        const myHeaders = new Headers()
+        myHeaders.append('Content-Type', 'application/json')
         const raw = JSON.stringify({
             departure: departureInput,
             arrival: arrivalInput,
-            weight: weightInput,
+            weight: parseFloat(weightInput),
             etd: etdInput,
             eta: etaInput,
-            price: priceInput,
+            price: parseFloat(priceInput),
             notes: notesInput,
-        });
+        })
 
         const requestOptions: RequestInit = {
             method: 'POST',
             headers: myHeaders,
             body: raw,
             redirect: 'follow',
-        };
+        }
 
         fetch('http://localhost:8080/offers', requestOptions)
             .then((response) => {
@@ -86,86 +84,112 @@ export default function ModalComponent({
                 return response.json()
             })
             .then((result) => console.log(result))
-            .catch((error) => console.error('error', error));
-
+            .catch((error) => console.error('error', error))
     }
 
     return (
         <>
             <Modal
-                title="Enter your new offer"
+                title="Enter Your New Offer"
                 open={isModalOpen}
                 onOk={sendOffer}
                 onCancel={handleCancel}
+                centered
             >
-                <form>
-                    <div className="flex flex-col gap-2">
+                <form className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <p className="font-bold">Departure : </p>
+                            <label htmlFor="departure" className="block text-sm font-medium text-gray-700">Departure</label>
                             <input
+                                id="departure"
+                                name="departure"
+                                type="text"
                                 value={departureInput}
                                 onChange={handleChange}
-                                placeholder="Enter departure airport ..."
-                                name="departure"
+                                placeholder="DEP"
+                                className="w-full rounded-md px-4 py-2 border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 uppercase"
+                                maxLength={3}
                             />
                         </div>
                         <div>
-                            <p className="font-bold">Arrival : </p>
+                            <label htmlFor="arrival" className="block text-sm font-medium text-gray-700">Arrival</label>
                             <input
+                                id="arrival"
+                                name="arrival"
+                                type="text"
                                 value={arrivalInput}
                                 onChange={handleChange}
-                                placeholder="Enter airport of destination ..."
-                                name="arrival"
+                                placeholder="ARR"
+                                className="w-full rounded-md px-4 py-2 border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 uppercase"
+                                maxLength={3}
                             />
                         </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <p className="font-bold">Weight : </p>
+                            <label htmlFor="weight" className="block text-sm font-medium text-gray-700">Weight</label>
                             <input
+                                id="weight"
+                                name="weight"
+                                type="text"
                                 value={weightInput}
                                 onChange={handleChange}
-                                placeholder="Enter chargeable weight ..."
-                                name="weight"
+                                placeholder="Enter chargeable weight"
+                                className="w-full rounded-md px-4 py-2 border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
                         <div>
-                            <p className="font-bold">ETD : </p>
+                            <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price</label>
                             <input
-                                value={etdInput}
-                                onChange={handleChange}
-                                placeholder="Enter ETD ..."
-                                name="etd"
-                            />
-                        </div>
-                        <div>
-                            <p className="font-bold">ETA :</p>
-                            <input
-                                value={etaInput}
-                                onChange={handleChange}
-                                placeholder="Enter ETA ..."
-                                name="eta"
-                            />
-                        </div>
-                        <div>
-                            <p className="font-bold">Price :</p>
-                            <input
+                                id="price"
+                                name="price"
+                                type="text"
                                 value={priceInput}
                                 onChange={handleChange}
-                                placeholder="Enter price of freight ..."
-                                name="price"
+                                placeholder="Enter price (e.g., 9.33)"
+                                className="w-full rounded-md px-4 py-2 border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label htmlFor="etd" className="block text-sm font-medium text-gray-700">ETD</label>
+                            <input
+                                id="etd"
+                                name="etd"
+                                type="text"
+                                value={etdInput}
+                                onChange={handleChange}
+                                placeholder="Enter estimated time of departure"
+                                className="w-full rounded-md px-4 py-2 border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="eta" className="block text-sm font-medium text-gray-700">ETA</label>
+                            <input
+                                id="eta"
+                                name="eta"
+                                type="text"
+                                value={etaInput}
+                                onChange={handleChange}
+                                placeholder="Enter estimated time of arrival"
+                                className="w-full rounded-md px-4 py-2 border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
                     </div>
                     <div>
-                        <p className="font-bold">Notes :</p>
-                        <input
+                        <label htmlFor="notes" className="block text-sm font-medium text-gray-700">Notes</label>
+                        <textarea
+                            id="notes"
+                            name="notes"
                             value={notesInput}
                             onChange={handleChange}
-                            placeholder="Enter a note ..."
-                            name="notes"
+                            placeholder="Enter any additional notes"
+                            className="w-full rounded-lg px-4 py-2 border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
                 </form>
             </Modal>
         </>
-    );
+    )
 }

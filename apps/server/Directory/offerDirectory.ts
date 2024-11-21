@@ -64,6 +64,7 @@ export async function addBooking(
     },
   })
   if (!!offerData) {
+    console.log('Entered !!offerData')
     //If it's not undefined or null
     const { availableWeight, bookable } = offerData
     if (!bookable || availableWeight - weight < 0) {
@@ -89,6 +90,7 @@ export async function addBooking(
       },
     },
   })
+  return true
 }
 
 export async function getBooking(

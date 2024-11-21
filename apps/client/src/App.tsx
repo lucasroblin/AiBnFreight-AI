@@ -2,23 +2,17 @@ import Box from '@mui/joy/Box'
 import Button from '@mui/joy/Button'
 import Typography from '@mui/joy/Typography'
 import Stack from '@mui/joy/Stack'
-import Drawer from '@mui/joy/Drawer'
 import { useCallback, useEffect, useState } from 'react'
 import * as api from '@/lib/api-client'
 import { Offer } from '@/lib/api-client'
 import { FlightPath } from './components/FlightPath'
-import { OffersNotes } from './components/OffersNotes'
-import { Card, CardContent } from './components/ui/card'
-import { OffersWeight } from './components/OffersWeight'
-import { OffersEtd } from './components/OffersETD'
-import { OffersEta } from './components/OffersETA'
-import { OffersAvailableWeight } from './components/OffersAvailableWeight'
-import { OffersPrice } from './components/OffersPrice'
+import { Card } from './components/ui/card'
 import { FloatButton } from 'antd'
 import { MenuBar } from './components/MenuBar'
 import { SearchBar } from './components/SearchBar'
 import ModalComponent from './components/ModalComponent'
 import SuccessModalComponent from './components/SuccessModalComponent'
+import InfoDrawer from './components/InfoDrawer'
 
 export default function App() {
   const [allData, setAllData] = useState<Offer[]>([])
@@ -33,7 +27,7 @@ export default function App() {
   async function getData() {
     const data = await api.getOffers()
     setAllData(data)
-    setFilteredData(data) // Initially show all data
+    setFilteredData(data)
   }
 
   useEffect(() => {
@@ -70,16 +64,6 @@ export default function App() {
     showSuccessModal()
   }
 
-  function formatNumber(num: number): string {
-    const numStr = num.toString()
-
-    if (numStr.length === 3 || numStr.length === 4) {
-      return (num / 100).toFixed(2)
-    }
-
-    return numStr
-  }
-
   async function filterFlights(departure: string, arrival: string, weight: string) {
     const parsedWeight = weight ? parseFloat(weight) : null
 
@@ -114,6 +98,7 @@ export default function App() {
         </div>
 
         <SearchBar filterFlights={filterFlights} />
+        <InfoDrawer drawerState={drawerState} setDrawerState={setDrawerState} selectedOffer={selectedOffer} selectedWeight={selectedWeight} setSelectedWeight={setSelectedWeight} />
 
         <div className="flex justify-center mt-4">
           <div className="grid grid-cols-4 gap-4 max-w-[70%] min-w-[70%]">
@@ -180,92 +165,6 @@ export default function App() {
             Next
           </Button>
         </div>
-
-        <Drawer
-          size="md"
-          anchor={'right'}
-          open={drawerState}
-          onClose={() => setDrawerState(false)}
-        >
-          {selectedOffer && (
-            <div className="p-6 flex flex-col gap-6 h-full">
-              <div className="flex-grow">
-                <Card>
-                  <CardContent className="pt-6">
-                    <OffersNotes offer={selectedOffer} />
-                  </CardContent>
-                </Card>
-
-                <Card className="min-h-28 flex justify-center items-center">
-                  <CardContent className="pt-6">
-                    <FlightPath offer={selectedOffer} />
-                  </CardContent>
-                </Card>
-
-                <Card className="min-h-28 flex justify-center items-center">
-                  <CardContent className="pt-6">
-                    <OffersWeight offer={selectedOffer} />
-                  </CardContent>
-                </Card>
-
-                <Card className="min-h-28 flex justify-center items-center">
-                  <CardContent className="pt-6">
-                    <OffersEtd offer={selectedOffer} />
-                  </CardContent>
-                </Card>
-
-                <Card className="min-h-28 flex justify-center items-center">
-                  <CardContent className="pt-6">
-                    <OffersEta offer={selectedOffer} />
-                  </CardContent>
-                </Card>
-
-                <Card className="min-h-28 flex justify-center items-center">
-                  <CardContent className="pt-6">
-                    <OffersAvailableWeight offer={selectedOffer} />
-                  </CardContent>
-                </Card>
-
-                <Card className="min-h-28 flex justify-center items-center">
-                  <CardContent className="pt-6">
-                    <OffersPrice offer={selectedOffer} />
-                  </CardContent>
-                </Card>
-              </div>
-
-              <div className="flex flex-col gap-4">
-                <label className="font-bold">Enter Weight (Kg):</label>
-                <input
-                  type="text"
-                  className="border border-gray-300 rounded-md px-3 py-2 w-full"
-                  value={selectedWeight === 0 ? '' : selectedWeight}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (/^\d*$/.test(value)) {
-                      const numericValue = Number(value);
-                      if (numericValue <= (selectedOffer?.availableWeight || 0)) {
-                        setSelectedWeight(numericValue);
-                      }
-                    }
-                  }}
-                  placeholder={`Enter weight (max ${selectedOffer?.availableWeight || 0} Kg)`}
-                />
-                <Typography className="text-lg font-bold text-blue-600">
-                  Total Price: ${(
-                    selectedWeight * parseFloat(formatNumber(selectedOffer.price || 0))
-                  ).toFixed(2)}
-                </Typography>
-              </div>
-
-              <Button
-                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mt-4"
-                onClick={() => { }}
-              >
-                Book
-              </Button>
-            </div>
-          )}
-        </Drawer>
       </Box>
 
       <FloatButton

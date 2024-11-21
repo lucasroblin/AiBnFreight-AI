@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Offer {
-  id           Int       @id @default(autoincrement())
+  id           Int       @id @unique @default(autoincrement())
   departure    Airport   @relation("Departures", fields: [departureId], references: [iata], onDelete: Cascade)
   departureId  String
   arrival      Airport   @relation("Arrivals", fields: [arrivalId], references: [iata], onDelete: Cascade)
@@ -28,7 +28,7 @@ model Offer {
 }
 
 model Booking {
-  id        Int      @id @default(autoincrement())
+  id        Int      @id @unique @default(autoincrement())
   weight    Int
   status    String?  
   timestamp DateTime @default(now())
@@ -37,7 +37,7 @@ model Booking {
 }
 
 model Airport {
-  iata       String  @id
+  iata       String  @id @unique
   Departures Offer[] @relation("Departures")
   Arrivals   Offer[] @relation("Arrivals")
   name       String
