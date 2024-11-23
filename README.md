@@ -2,11 +2,11 @@
 For a solo project, i created from scratch a marketplace for last minute availability of air freight.
 
 
-#TECH STACK
+# TECH STACK
 
 - Node.js
   
-#Frontend :
+# Frontend :
 - Material UI
 - ShadCN
 - Ant Design
@@ -14,7 +14,7 @@ For a solo project, i created from scratch a marketplace for last minute availab
 - TypeScript
 - Vite
 
-#Backend :
+# Backend :
 - Express.js
 - Prisma
 - PostgresSql
